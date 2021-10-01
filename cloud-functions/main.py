@@ -1,3 +1,4 @@
+from flask import jsonify
 from math import exp
 from trapezoidal import trapezoidal
 from midpoint import midpoint
@@ -60,5 +61,5 @@ def cloud_function(request, numerical_method):
     # return str(globals()) + str(f) + str(globals()['f'])
     result = numerical_method(f, a, b, n)
 
-    return jsonify(result=reslt)
+    return jsonify(result=result)
 
