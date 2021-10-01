@@ -21,6 +21,7 @@ def cloud_function(request, numerical_method):
          https://cloud.google.com/functions/docs/quickstart-python
     """
     start = time.perf_counter()
+    start_CPU = time.process_time()
     request_json = request.get_json()
 
     f = None#lambda t: 3*(t**2)*exp(t**3)
@@ -63,6 +64,10 @@ def cloud_function(request, numerical_method):
     # return str(globals()) + str(f) + str(globals()['f'])
     result = numerical_method(f, a, b, n)
     end = time.perf_counter()
+    end_CPU = time.process_time()
 
-    return jsonify(result=result, perf_counter=(end-start))
+    return jsonify(
+        result=result, 
+        perf_counter=(end-start),
+        process_time=(end_CPU-start_CPU))
 
