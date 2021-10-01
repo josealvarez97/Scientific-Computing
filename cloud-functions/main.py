@@ -1,6 +1,3 @@
-# Source(s): 
-# Adapted from Programming for Computations by S. Linge & H. Langtangen (2020)
-# A Gentle Introduction to Numerical Simulations with Python 
 from math import exp
 from trapezoidal import trapezoidal
 from midpoint import midpoint
