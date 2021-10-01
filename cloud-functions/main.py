@@ -63,5 +63,5 @@ def cloud_function(request, numerical_method):
     # return str(globals()) + str(f) + str(globals()['f'])
     result = numerical_method(f, a, b, n)
 
-    return f"{result}"
+    return f"{result} test"
 
