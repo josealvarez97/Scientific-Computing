@@ -1,11 +1,13 @@
 from flask import jsonify
+import timeit
+import json
 from math import exp
 from trapezoidal import trapezoidal
 from midpoint import midpoint
 
 def midpoint_cloud_function(request):
-    return cloud_function(request, midpoint)
-
+    time = timeit.timeit(cloud_function(request, midpoint))
+    return time
 def trapezoidal_cloud_function(request):
     return cloud_function(request, trapezoidal)
 
@@ -19,6 +21,7 @@ def cloud_function(request, numerical_method):
         `make_response <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>`.
          https://cloud.google.com/functions/docs/quickstart-python
     """
+
     request_json = request.get_json()
 
     f = None#lambda t: 3*(t**2)*exp(t**3)
