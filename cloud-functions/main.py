@@ -61,5 +61,5 @@ def cloud_function(request, numerical_method):
     # return str(globals()) + str(f) + str(globals()['f'])
     result = numerical_method(f, a, b, n)
 
-    return jsonify(result=result)
+    return jsonify(result=result, test="both")
 
