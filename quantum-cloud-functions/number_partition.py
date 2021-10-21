@@ -56,19 +56,6 @@ def create_simplified_problem_for_number_partition(partition_weights: List[int])
     return Problem(name="Number Partition Problem (Simplified)", problem_type = ProblemType.ising, terms=terms)
 
 def solve_number_partition(problem):
-    # tenant_id = os.environ["AZURE_TENANT_ID"]
-    # client_id = os.environ["AZURE_CLIENT_ID"]
-    # client_secret = os.environ["AZURE_CLIENT_SECRET"]
-    # credential = ClientSecretCredential(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)
-
-    # workspace = Workspace(
-    # subscription_id = os.environ["QUANTUM_SUBSCRIPTION_ID"],
-    # resource_group = os.environ["QUANTUM_RESOURCE_GROUP"],
-    # name = os.environ["QUANTUM_WORKSPACE_NAME"],
-    # location = os.environ["QUANTUM_LOCATION"]
-    # )
-
-    # workspace.credentials = credential
     print("Log workspace!", workspace)
     print(workspace.credentials)
     solver = ParallelTempering(workspace, timeout=100)
