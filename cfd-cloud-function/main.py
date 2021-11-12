@@ -1,0 +1,55 @@
+from flask import send_file
+from cavity_flow import CavityFlow
+from zipfile import ZipFile
+import os
+from os.path import basename
+from io import BytesIO
+
+
+def cavity_flow(request):
+    cfd_solver = CavityFlow()
+    cfd_solver.set_u_boundaries()
+    cfd_solver.set_v_boundaries()
+    cfd_solver.set_pressure_boundaries()
+
+    cfd_solver.simulate_cavity_flow(nt=1000)
+    
+    import numpy as np
+    from matplotlib import pyplot as plt, cm
+    
+    x = np.linspace(cfd_solver.x_min, cfd_solver.x_max, cfd_solver.nx)
+    y = np.linspace(cfd_solver.x_min, cfd_solver.x_max, cfd_solver.nx)
+    
+    X,Y = np.meshgrid(x,y)
+    
+    fig = plt.figure(figsize=(11,7), dpi=100)
+    # plotting the pressure field as a contour
+    plt.contourf(X, Y, cfd_solver.p, alpha=0.5, cmap=cm.viridis)
+    plt.colorbar()
+    # plotting the pressure field outlines
+    plt.contour(X, Y, cfd_solver.p, cmap=cm.viridis)
+    # plotting velocity field
+    plt.quiver(X[::2, ::2], Y[::2, ::2], cfd_solver.u[::2, ::2], cfd_solver.v[::2, ::2])
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    
+    plt.savefig('/tmp/cavity_flow.png', bbox_inches='tight')
+    print("Wrote cavity_flow.png successfullly.")
+    
+    # https://thispointer.com/python-how-to-create-a-zip-archive-from-multiple-files-or-directory/
+    # create a ZipFile object
+    memory_file = BytesIO()
+    with ZipFile(memory_file, 'w') as zipObj:
+       # Iterate over all the files in directory
+       for folderName, subfolders, filenames in os.walk("/tmp/"):
+           for filename in filenames:
+               #create complete filepath of file in directory
+               filePath = os.path.join(folderName, filename)
+               # Add file to zip
+               zipObj.write(filePath, basename(filePath))
+
+    print("Wrote zip file with results successfullly.")
+    memory_file.seek(0)
+    print("about to send memory_file")
+    # https://stackoverflow.com/questions/27337013/how-to-send-zip-files-in-the-python-flask-framework
+    return send_file(memory_file, attachment_filename='cavity_flow_results.zip', as_attachment=True)
