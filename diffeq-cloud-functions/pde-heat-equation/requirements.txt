@@ -1,0 +1,6 @@
+numpy
+matplotlib
+matplotlib-inline
+matplotlib-venn
+python-math
+zipfile36
