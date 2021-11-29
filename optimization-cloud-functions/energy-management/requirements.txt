@@ -1,0 +1,6 @@
+cvxpower
+numpy
+networkx
+matplotlib
+matplotlib-inline
+matplotlib-venn
