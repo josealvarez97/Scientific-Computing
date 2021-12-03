@@ -1,7 +1,14 @@
+set.seed(1234)
+library(bpCausal) 
+data(bpCausal)
+test <- ls()
+
+
+
 #' @get /hello
 #' @html
 function(){
-  "<html><h1>hello world</h1></html>"
+  paste0("<html><h1>hello world</h1></html>",test)
 }
 
 #' Echo the parameter that was sent in
