@@ -57,7 +57,8 @@ function(req, res) {
   write(jsonlite::toJSON(sout1,auto_unbox=FALSE), file="sout1.json")
   zip("result.zip", "sout1.json")
 
-  include_file("result.zip", res, content_type = plumber::getContentType(tools::file_ext("result.zip")))
+  # include_file("result.zip", res, content_type = plumber::getContentType(tools::file_ext("result.zip")))
+  as_attachment("result.zip", filename="result.zip")
 
   # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
   # "<html><h1>testing body</h1></html>"
