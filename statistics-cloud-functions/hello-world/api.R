@@ -28,21 +28,21 @@ function(req, res) {
                 Xname = data$Xname, #c("X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8", "X9"), # covariates that have constant (fixed) effect  
                 Zname = data$Zname, #c("X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8", "X9"), # covariates that have unit-level random effect  
                 Aname = data$Aname, #c("X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8", "X9"), # covariates that have time-level random effect  
-                re = "both",   # two-way random effect: choose from ("unit", "time", "none", "both") 
-                ar1 = TRUE,    # whether the time-level random effects is ar1 process or jsut multilevel (independent)
-                r = 10,        # factor numbers 
-                niter = 15000, # number of mcmc draws
-                burn = 5000,   # burn-in draws 
-                xlasso = 1,    ## whether to shrink constant coefs (1 = TRUE, 0 = FALSE)
-                zlasso = 1,    ## whether to shrink unit-level random coefs (1 = TRUE, 0 = FALSE)
-                alasso = 1,    ## whether to shrink time-level coefs (1 = TRUE, 0 = FALSE)
-                flasso = 1,    ## whether to shrink factor loadings (1 = TRUE, 0 = FALSE)
-                a1 = 0.001, a2 = 0.001, ## parameters for hyper prior shrink on beta (diffuse hyper priors)
-                b1 = 0.001, b2 = 0.001, ## parameters for hyper prior shrink on alpha_i
-                c1 = 0.001, c2 = 0.001, ## parameters for hyper prior shrink on xi_t
-                p1 = 0.001, p2 = 0.001) ## parameters for hyper prior shrink on factor terms
-                 
-  # sout1 <- coefSummary(out1)  ## summary estimated parameters
+                re = data$re, #"both",   # two-way random effect: choose from ("unit", "time", "none", "both") 
+                ar1 = data$ar1, #TRUE,    # whether the time-level random effects is ar1 process or jsut multilevel (independent)
+                r = data$r, #10,        # factor numbers 
+                niter = data$niter, #15000, # number of mcmc draws
+                burn = data$burn, #5000,   # burn-in draws 
+                xlasso = data$xlasso, #1,    ## whether to shrink constant coefs (1 = TRUE, 0 = FALSE)
+                zlasso = data$zlasso, #1,    ## whether to shrink unit-level random coefs (1 = TRUE, 0 = FALSE)
+                alasso = data$alasso, #1,    ## whether to shrink time-level coefs (1 = TRUE, 0 = FALSE)
+                flasso = data$flasso, #1,    ## whether to shrink factor loadings (1 = TRUE, 0 = FALSE)
+                a1 = data$a1, a2 = data$a2, #0.001, a2 = 0.001, ## parameters for hyper prior shrink on beta (diffuse hyper priors)
+                b1 = data$a1, b2 = data$b2, #0.001, b2 = 0.001, ## parameters for hyper prior shrink on alpha_i
+                c1 = data$c1, c2 = data$c2, #0.001, c2 = 0.001, ## parameters for hyper prior shrink on xi_t
+                p1 = data$p1, p2 = data$p2) #0.001, p2 = 0.001) ## parameters for hyper prior shrink on factor terms
+
+  sout1 <- coefSummary(out1)  ## summary estimated parameters
   # eout1 <- effSummary(out1,   ## summary treatment effects
   #                     usr.id = NULL, ## treatment effect for individual treated units, if input NULL, calculate average TT
   #                     cumu = FALSE,  ## whether to calculate culmulative treatment effects
@@ -51,8 +51,8 @@ function(req, res) {
   sout1$est.beta 
 
 
-  paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
-  "<html><h1>testing body</h1></html>"
+  # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
+  # "<html><h1>testing body</h1></html>"
 }
 
 #' Echo the parameter that was sent in
