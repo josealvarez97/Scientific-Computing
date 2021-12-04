@@ -5,14 +5,19 @@ test <- ls()
 
 x1 <- "x1 string"
 
-#' @get /hello
+#' @post /hello
 #' @html
-function(){
+function(req, res) {
+  data <- tryCatch(jsonlite::parse_json(req$postBody, simplifyVector=TRUE), error = function(e) NULL)
+  if (is.null(data)) {
+    res$status <- 400
+    return(list(error = "No data submitted"))
+  }
+  cat(data)
+  
   set.seed(1234)
   library(bpCausal) 
   data(bpCausal)
-  test <- ls()
-  # library(forecast)
 
   x2 <- "x2 string"
   
@@ -46,7 +51,7 @@ function(){
   sout1$est.beta 
 
 
-  paste0("<html><h1>creo que ls() no funciona",test, x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
+  paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
 }
 
 #' Echo the parameter that was sent in
