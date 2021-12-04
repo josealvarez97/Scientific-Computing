@@ -12,7 +12,7 @@ function(){
   library(bpCausal) 
   data(bpCausal)
   test <- ls()
-  library(forecast)
+  # library(forecast)
 
   x2 <- "x2"
 
