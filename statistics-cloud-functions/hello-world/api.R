@@ -8,7 +8,7 @@ library(plumber)
 x1 <- "x1 string"
 
 #' @post /hello
-#' @serializer csv
+#' @serializer json
 function(req, res) {
   data <- tryCatch(jsonlite::parse_json(req$postBody, simplifyVector=TRUE), error = function(e) NULL)
   if (is.null(data)) {
@@ -51,8 +51,9 @@ function(req, res) {
   #                     rela.period = TRUE) ## whether to use time relative to the occurence of treatment (1 is the first post-treatment period) or real period (like year 1998, 1999, ...)
   
   # sout1$est.beta
+  print(get_registered_serializers())
   print(sout1)
-  as_attachment(sout1, filename = "sout1.csv")
+  as_attachment(sout1, filename = "sout1.json")
 
 
 
