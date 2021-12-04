@@ -51,10 +51,11 @@ function(req, res) {
   
   # sout1$est.beta
   print(plumber::registered_serializers())
-  print(sout1)
+  # print(sout1)
   # as_attachment(sout1, filename = "sout1.json")
-  write.csv(sout1, 'sout1.csv')
-  zip("result.zip", "sout1.csv")
+  
+  write(jsonlite::toJSON(sout1,auto_unbox=FALSE), file="sout1.json")
+  zip("result.zip", "sout1.json")
 
   include_file("result.zip", res)
 
