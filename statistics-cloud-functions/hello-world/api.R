@@ -13,7 +13,7 @@ function(req, res) {
     res$status <- 400
     return(list(error = "No data submitted"))
   }
-  cat(data)
+  print(data)
   
   set.seed(1234)
   library(bpCausal) 
