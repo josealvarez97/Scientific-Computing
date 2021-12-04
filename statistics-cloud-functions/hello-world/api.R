@@ -48,7 +48,10 @@ function(req, res) {
   #                     cumu = FALSE,  ## whether to calculate culmulative treatment effects
   #                     rela.period = TRUE) ## whether to use time relative to the occurence of treatment (1 is the first post-treatment period) or real period (like year 1998, 1999, ...)
   
-  sout1$est.beta 
+  # sout1$est.beta
+  print(sout1)
+  as_attachment(sout1, filename = "sout1.csv")
+
 
 
   # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
