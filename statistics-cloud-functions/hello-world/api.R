@@ -3,6 +3,8 @@ library(bpCausal)
 data(bpCausal)
 test <- ls()
 
+library(plumber)
+
 x1 <- "x1 string"
 
 #' @post /hello
