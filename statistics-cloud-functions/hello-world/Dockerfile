@@ -1,4 +1,4 @@
-FROM trestletech/plumber
+FROM rstudio/plumber
 RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
   && apt-get install -y git-core
 RUN ["install2.r", "remotes"]
