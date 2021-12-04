@@ -51,7 +51,7 @@ function(req, res) {
   #                     rela.period = TRUE) ## whether to use time relative to the occurence of treatment (1 is the first post-treatment period) or real period (like year 1998, 1999, ...)
   
   # sout1$est.beta
-  print(registered_serializers())
+  print(plumber::registered_serializers())
   print(sout1)
   as_attachment(sout1, filename = "sout1.json")
 
