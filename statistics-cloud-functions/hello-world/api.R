@@ -8,7 +8,6 @@ library(plumber)
 x1 <- "x1 string"
 
 #' @post /hello
-#' @serializer json
 function(req, res) {
   data <- tryCatch(jsonlite::parse_json(req$postBody, simplifyVector=TRUE), error = function(e) NULL)
   if (is.null(data)) {
@@ -53,9 +52,11 @@ function(req, res) {
   # sout1$est.beta
   print(plumber::registered_serializers())
   print(sout1)
-  as_attachment(sout1, filename = "sout1.json")
+  # as_attachment(sout1, filename = "sout1.json")
+  write.csv(sout1, 'sout1.csv')
+  zip("result.zip", "sout1.csv")
 
-
+  include_file("result.zip", res)
 
   # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
   # "<html><h1>testing body</h1></html>"
