@@ -8,7 +8,7 @@ test <- ls()
 #' @get /hello
 #' @html
 function(){
-  paste0("<html><h1>hello world</h1></html>",test)
+  paste0("<html><h1>hello world new test",test,"</h1></html>")
 }
 
 #' Echo the parameter that was sent in
