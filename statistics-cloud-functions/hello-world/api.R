@@ -3,7 +3,7 @@ library(bpCausal)
 data(bpCausal)
 test <- ls()
 
-library(plumber)
+# library(plumber)
 
 x1 <- "x1 string"
 

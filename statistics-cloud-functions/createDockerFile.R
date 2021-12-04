@@ -2,7 +2,7 @@ library(containerit)
 cr_dockerfile_plumber <- function(deploy_folder, ...){
   docker <- dockerfile(
       deploy_folder,
-      image = "trestletech/plumber",
+      image = "rstudio/plumber",
       offline = FALSE,
       cmd = Cmd("api.R"),
       maintainer = NULL,
