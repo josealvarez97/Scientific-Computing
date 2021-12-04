@@ -3,7 +3,7 @@ library(bpCausal)
 data(bpCausal)
 test <- ls()
 
-x1 <- "x1"
+x1 <- "x1 string"
 
 #' @get /hello
 #' @html
@@ -14,9 +14,9 @@ function(){
   test <- ls()
   # library(forecast)
 
-  x2 <- "x2"
+  x2 <- "x2 string"
 
-  paste0("<html><h1>hello world new test",test, x1, x2, "ls", ls(), "</h1></html>")
+  paste0("<html><h1>creo que ls() no funciona",test, x1, x2, "ls", ls(), "</h1></html>")
 }
 
 #' Echo the parameter that was sent in
