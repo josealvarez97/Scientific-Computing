@@ -8,7 +8,7 @@ library(plumber)
 x1 <- "x1 string"
 
 #' @post /hello
-#' @html
+#' @serializer csv
 function(req, res) {
   data <- tryCatch(jsonlite::parse_json(req$postBody, simplifyVector=TRUE), error = function(e) NULL)
   if (is.null(data)) {
