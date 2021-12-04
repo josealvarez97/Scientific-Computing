@@ -8,7 +8,12 @@ test <- ls()
 #' @get /hello
 #' @html
 function(){
-  paste0("<html><h1>hello world new test",test,"</h1></html>")
+  set.seed(1234)
+  library(bpCausal) 
+  data(bpCausal)
+  test <- ls()
+
+  paste0("<html><h1>hello world new test 2",test,"</h1></html>")
 }
 
 #' Echo the parameter that was sent in
