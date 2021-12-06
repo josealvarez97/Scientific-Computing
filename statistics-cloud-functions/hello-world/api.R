@@ -59,7 +59,13 @@ function(req, res) {
   zip("result.zip", "sout1.json")
 
   res$setHeader("Content-Disposition", "attachment; filename=newresult.zip")
-  include_file("result.zip", res)
+  
+  # https://stackoverflow.com/questions/68195628/how-to-send-a-pdf-as-an-attachment-in-a-plumber-api
+  # https://stackoverflow.com/questions/52443201/serve-downloadable-files-with-plumber  
+  # https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/readBin
+  readBin("result.zip", "raw", n = file.info("result.zip")$size)
+  
+  # include_file("result.zip", res)
   # as_attachment("result.zip", filename="result.zip")
 
   # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
