@@ -8,6 +8,7 @@ library(plumber)
 x1 <- "x1 string"
 
 #' @post /hello
+#' @serializer contentType list(type="application/octet-stream")
 function(req, res) {
   data <- tryCatch(jsonlite::parse_json(req$postBody, simplifyVector=TRUE), error = function(e) NULL)
   if (is.null(data)) {
@@ -57,7 +58,8 @@ function(req, res) {
   write(jsonlite::toJSON(sout1,auto_unbox=FALSE), file="sout1.json")
   zip("result.zip", "sout1.json")
 
-  include_file("result.zip", res, content_type = "application/octet-stream")
+  res$setHeader("Content-Disposition", "attachment; filename=newresult.zip")
+  include_file("result.zip", res)
   # as_attachment("result.zip", filename="result.zip")
 
   # paste0("<html><h1>creo que ls() no funciona", x1, x2, "ls", ls(), sout1$est.beta, "</h1></html>")
