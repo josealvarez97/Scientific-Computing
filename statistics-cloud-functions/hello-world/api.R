@@ -45,18 +45,21 @@ function(req, res) {
                 p1 = data$p1, p2 = data$p2) #0.001, p2 = 0.001) ## parameters for hyper prior shrink on factor terms
 
   sout1 <- coefSummary(out1)  ## summary estimated parameters
-  # eout1 <- effSummary(out1,   ## summary treatment effects
-  #                     usr.id = NULL, ## treatment effect for individual treated units, if input NULL, calculate average TT
-  #                     cumu = FALSE,  ## whether to calculate culmulative treatment effects
-  #                     rela.period = TRUE) ## whether to use time relative to the occurence of treatment (1 is the first post-treatment period) or real period (like year 1998, 1999, ...)
+  eout1 <- effSummary(out1,   ## summary treatment effects
+                      usr.id = NULL, ## treatment effect for individual treated units, if input NULL, calculate average TT
+                      cumu = FALSE,  ## whether to calculate culmulative treatment effects
+                      rela.period = TRUE) ## whether to use time relative to the occurence of treatment (1 is the first post-treatment period) or real period (like year 1998, 1999, ...)
+  
+  write(jsonlite::toJSON(sout1,auto_unbox=FALSE), file="summary_estimated_parameters.json")
+  zip("result.zip", "summary_estimated_parameters.json")
+  write(jsonlite::toJSON(eout1,auto_unbox=FALSE), file="summary_treatment_effects.json")
+  zip("result.zip", "summary_treatment_effects.json")
   
   # sout1$est.beta
-  print(plumber::registered_serializers())
+  # print(plumber::registered_serializers())
   # print(sout1)
   # as_attachment(sout1, filename = "sout1.json")
   
-  write(jsonlite::toJSON(sout1,auto_unbox=FALSE), file="sout1.json")
-  zip("result.zip", "sout1.json")
 
   res$setHeader("Content-Disposition", "attachment; filename=newresult.zip")
   
