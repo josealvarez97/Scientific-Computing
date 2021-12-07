@@ -19,11 +19,13 @@ function(req, res) {
   
   set.seed(1234)
   library(bpCausal) 
-  data(bpCausal)
+  # data(bpCausal)
+  dataset <- read.csv(data$dataset)
 
   # x2 <- "x2 string"
   
-  out1 <- bpCausal(data = simdata, ## simulated dataset  
+  
+  out1 <- bpCausal(data = dataset, ## dataset  
                 index = data$index, #c("id", "time"), ## names for unit and time index
                 Yname = data$Yname, #"Y", ## outcome variable
                 Dname = data$Dname, #"D", ## treatment indicator  
