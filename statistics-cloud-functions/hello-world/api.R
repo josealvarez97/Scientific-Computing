@@ -59,6 +59,23 @@ function(req, res) {
   write(jsonlite::toJSON(eout1$est.eff, auto_unbox=FALSE), file="ATT.json")
   zip("result.zip", "ATT.json")
 
+  png(file="ATT.png", width=600, height=600)
+  par(bg = 'black', fg = 'white', 
+      col.axis = 'white', col.lab = 'white',
+      col.main = 'white', col.sub = 'white',
+      mgp=c(2,1,0)) # set background to black, foreground white
+  x1 = c(-19:10)
+  plot(x1, eout1$est.eff$estimated_ATT, type = "l", ylim = c(-2, 12),
+      xlab = "Time", ylab = "ATT", cex.lab = 1.25,
+      main="Estimated Average Treatment Effect on the Treated",
+      sub="Posterior mean and 95% posterior credible intervals"
+      )
+  abline(v = 0, lty = 3, col = "#52B1B1")
+  lines(x1, eout1$est.eff$estimated_ATT_ci_l, lty = 2)
+  lines(x1, eout1$est.eff$estimated_ATT_ci_u, lty = 2)
+  dev.off()
+  zip("result.zip", "ATT.png")
+
   
   
   
