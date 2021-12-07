@@ -54,6 +54,13 @@ function(req, res) {
   zip("result.zip", "summary_estimated_parameters.json")
   write(jsonlite::toJSON(eout1,auto_unbox=FALSE), file="summary_treatment_effects.json")
   zip("result.zip", "summary_treatment_effects.json")
+  write(jsonlite::toJSON(sout1$est.beta, auto_unbox=FALSE), file="posterior_constant_effects.json")
+  zip("result.zip", "posterior_constant_effects.json")
+  write(jsonlite::toJSON(eout1$est.eff, auto_unbox=FALSE), file="ATT.json")
+  zip("result.zip", "ATT.json")
+
+  
+  
   
   # sout1$est.beta
   # print(plumber::registered_serializers())
