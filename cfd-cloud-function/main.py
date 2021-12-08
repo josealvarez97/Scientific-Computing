@@ -18,10 +18,27 @@ def parse_parameter(request, param):
     else:
         raise ValueError(f"Body is invalid, or missing '{param}' property")
         
+
 def cavity_flow(request):
+    tmp = "/tmp/cavity_flow_temp"
+    print("make temp directory")
+      #If directory does not exist, make it
+    if not os.path.isdir(tmp):
+        print("make directory, none exists")
+        os.makedirs(tmp,exist_ok=True)
+    else:
+        print("wipe everything in existing directory")
+        #If wipe is True, remove files present in the directory
+        # os.chdir(self.dir_path)
+        filelist=os.listdir(tmp)
+        print(filelist)
+        for file in filelist:
+            os.remove(os.path.join(tmp,file))
+    print("successfully made temp directory")
+    
     nt = parse_parameter(request, 'nt')
     
-    cfd_solver = CavityFlow( tmpdir="/tmp")
+    cfd_solver = CavityFlow( tmpdir=tmp)
     cfd_solver.set_u_boundaries()
     cfd_solver.set_v_boundaries()
     cfd_solver.set_pressure_boundaries()
@@ -47,35 +64,41 @@ def cavity_flow(request):
     plt.xlabel('X')
     plt.ylabel('Y')
     
-    plt.savefig('/tmp/cavity_flow.png', bbox_inches='tight')
+    plt.savefig(f'{tmp}/cavity_flow.png', bbox_inches='tight')
     print("Wrote cavity_flow.png successfullly.")
     
     flow_visualizer = FlowVisualizer(nx=cfd_solver.nx,
                                       ny=cfd_solver.ny,
                                       x_max=cfd_solver.x_max,
                                       y_max=cfd_solver.y_max,
-                                      tmpdir="/tmp")
+                                      tmpdir=tmp)
     # flow_visualizer.make_plot(iteration=90)  
     
     flow_visualizer.save_animation()
     
-    # shutil.make_archive(output_filename, 'zip', "/tmp")
-
+    # Zip result folder
+    shutil.make_archive(f"{tmp}/Result", 'zip', f"{tmp}/Result")
+    shutil.rmtree(f"{tmp}/Result")# I should probably separate visualization results from results I plan to zip
+    # Cleaning is not a bad idea, but I cloud probably do that after sending the zip file
+    
+    zipfile_path = shutil.make_archive("/tmp/resultzip", 'zip', tmp)
+    print("Successfully wrote zip with shutil")
     
     # https://thispointer.com/python-how-to-create-a-zip-archive-from-multiple-files-or-directory/
     # create a ZipFile object
-    memory_file = BytesIO()
-    with ZipFile(memory_file, 'w') as zipObj:
-       # Iterate over all the files in directory
-       for folderName, subfolders, filenames in os.walk("/tmp/"):
-           for filename in filenames:
-               #create complete filepath of file in directory
-               filePath = os.path.join(folderName, filename)
-               # Add file to zip
-               zipObj.write(filePath, basename(filePath))
+    # memory_file = BytesIO()
+    # with ZipFile(memory_file, 'w') as zipObj:
+    #   # Iterate over all the files in directory
+    #   for folderName, subfolders, filenames in os.walk("/tmp/"):
+    #       for filename in filenames:
+    #           #create complete filepath of file in directory
+    #           filePath = os.path.join(folderName, filename)
+    #           # Add file to zip
+    #           zipObj.write(filePath, basename(filePath))
 
-    print("Wrote zip file with results successfullly.")
-    memory_file.seek(0)
-    print("about to send memory_file")
+    # print("Wrote zip file with results successfullly.")
+    # memory_file.seek(0)
+    # print("about to send memory_file")
+    print("about to send zip_file")
     # https://stackoverflow.com/questions/27337013/how-to-send-zip-files-in-the-python-flask-framework
-    return send_file(memory_file, attachment_filename='cavity_flow_results.zip', as_attachment=True)
+    return send_file(zipfile_path, attachment_filename='cavity_flow_results.zip', as_attachment=True)
