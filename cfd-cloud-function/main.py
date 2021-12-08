@@ -1,5 +1,5 @@
 from flask import send_file
-from cavity_flow import CavityFlow
+from cavity_flow import CavityFlow, BoundaryType
 from zipfile import ZipFile
 import os
 from os.path import basename
@@ -37,9 +37,14 @@ def cavity_flow(request):
     print("successfully made temp directory")
     
     nt = parse_parameter(request, 'nt')
+    viscosity = parse_parameter(request, 'viscosity')
+    density = parse_parameter(request, 'density')
+    u_top = parse_parameter(request, 'u_top')
     
-    cfd_solver = CavityFlow( tmpdir=tmp)
-    cfd_solver.set_u_boundaries()
+    cfd_solver = CavityFlow(density=density,
+                            viscosity=viscosity, tmpdir=tmp)
+
+    cfd_solver.set_u_boundaries(top=(u_top,BoundaryType.DIRICHLET))
     cfd_solver.set_v_boundaries()
     cfd_solver.set_pressure_boundaries()
 

@@ -165,12 +165,23 @@ class CavityFlow():
                             bottom=(0,BoundaryType.NEUMANN), 
                             right=(0,BoundaryType.NEUMANN), 
                             left=(0,BoundaryType.NEUMANN)):
-      self.p = self.f_boundaries(self.p, top, bottom, right, left)  
-      # Set pressure configuration, somehow
+    # Set pressure based on a global configuration
+    self.p_boundary_config = {
+      "top": top,
+      "bottom": bottom,
+      "right": right,
+      "left": left
+    }
+    self.p = self.f_boundaries(self.p, top, bottom, right, left)  
 
   def reset_pressure_boundaries(self):
-    # Access pressure configuration and reset, somehow
-    print("Warning: reset_pressure_boundaries not implemented.")
+    # Should access global pressure configuration and reset
+    self.p = self.f_boundaries(self.p, 
+                                  self.p_boundary_config["top"],
+                                  self.p_boundary_config["bottom"],
+                                  self.p_boundary_config["right"],
+                                  self.p_boundary_config["left"])
+    # Should warn if no global pressure has been configured
 
   def diff_1st_x(self, f):
     return (f[1:-1, 2:] - f[1:-1,0:-2])/(2*self.dx)

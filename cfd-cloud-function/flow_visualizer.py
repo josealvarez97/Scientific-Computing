@@ -1,4 +1,9 @@
-
+'''
+References:
+Deshmukh, G. (2021). Computational Fluid Dynamics using Python: Modeling Laminar Flow. 
+Towards Data Science. 
+Retrieved from https://towardsdatascience.com/computational-fluid-dynamics-using-python-modeling-laminar-flow-272dad1ebec
+'''
 import numpy as np
 import sys
 import os
