@@ -4,15 +4,29 @@ from zipfile import ZipFile
 import os
 from os.path import basename
 from io import BytesIO
+from flow_visualizer import FlowVisualizer
+import shutil
 
-
+def parse_parameter(request, param):
+    request_json = request.get_json()
+    print("param", param)
+    print("request json", request_json)
+    if request.args and param in request.args:
+        return request.arg.get(param)
+    elif request_json and param in request_json:
+        return request_json[param]
+    else:
+        raise ValueError(f"Body is invalid, or missing '{param}' property")
+        
 def cavity_flow(request):
-    cfd_solver = CavityFlow()
+    nt = parse_parameter(request, 'nt')
+    
+    cfd_solver = CavityFlow( tmpdir="/tmp")
     cfd_solver.set_u_boundaries()
     cfd_solver.set_v_boundaries()
     cfd_solver.set_pressure_boundaries()
 
-    cfd_solver.simulate_cavity_flow(nt=1000)
+    cfd_solver.simulate_cavity_flow(nt=nt)
     
     import numpy as np
     from matplotlib import pyplot as plt, cm
@@ -35,6 +49,18 @@ def cavity_flow(request):
     
     plt.savefig('/tmp/cavity_flow.png', bbox_inches='tight')
     print("Wrote cavity_flow.png successfullly.")
+    
+    flow_visualizer = FlowVisualizer(nx=cfd_solver.nx,
+                                      ny=cfd_solver.ny,
+                                      x_max=cfd_solver.x_max,
+                                      y_max=cfd_solver.y_max,
+                                      tmpdir="/tmp")
+    # flow_visualizer.make_plot(iteration=90)  
+    
+    flow_visualizer.save_animation()
+    
+    # shutil.make_archive(output_filename, 'zip', "/tmp")
+
     
     # https://thispointer.com/python-how-to-create-a-zip-archive-from-multiple-files-or-directory/
     # create a ZipFile object

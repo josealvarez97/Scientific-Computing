@@ -1,3 +1,4 @@
+
 '''
 Sections of this code were written with the help of the following references:
 
@@ -14,6 +15,8 @@ Deshmukh, G. (2021). Computational Fluid Dynamics using Python: Modeling Laminar
 # Import your favorite libraries
 import numpy as np
 from enum import Enum
+import os
+from flow_visualizer import FlowVisualizer
 
 class BoundaryPosition(Enum):
   TOP = 0
@@ -30,7 +33,8 @@ class CavityFlow():
   def __init__(self, 
                x_min = 0, x_max = 2, nx = 41, 
                y_min = 0, y_max = 2, ny = 41, 
-               density = 1, viscosity = .1, dt=.001):
+               density = 1, viscosity = .1, dt=.001,
+               tmpdir=None):
     # Continuous domain
     self.x_min = x_min
     self.x_max = x_max
@@ -54,6 +58,15 @@ class CavityFlow():
     self.v = np.zeros((ny, nx))
     # Pressure
     self.p = np.zeros((ny,nx))
+
+    self.tmpdir = tmpdir
+    #Get path to the Result directory
+    cwdir=os.getcwd()
+    self.dir_path=(os.path.join(cwdir,"Result") 
+                      if self.tmpdir==None
+                      else 
+                      os.path.join(self.tmpdir,"Result"))
+
 
 
   def dirichlet_boundary(self, f, function_value, position):
@@ -241,11 +254,103 @@ class CavityFlow():
     self.v[1:-1,1:-1] = (-self.dt/self.rho) * self.diff_1st_y(self.p) + v_without_pressure[1:-1,1:-1]
 
   def simulate_cavity_flow(self, nt):
+    self.make_result_directory()
     for n in range(nt):
       u_without_pressure, v_without_pressure = self.vel_without_pressure(un=self.u,
                                                                          vn=self.v)
       R = self.get_R(u_without_pressure, v_without_pressure)
       self.solve_pressure_poisson(R)
       self.update_velocity(u_without_pressure, v_without_pressure)
+      
+      self.u[1:-1, 1:-1]
+      self.v[1:-1, 1:-1]
+      
+      self.write_to_file(iteration=n)
+      
+      
 
     print("Simulation finished.")
+    
+    
+  def make_result_directory(self, wipe=True):
+      print("make result directory")
+      #If directory does not exist, make it
+      if not os.path.isdir(self.dir_path):
+          print("make directory, none exists")
+          os.makedirs(self.dir_path,exist_ok=True)
+      else:
+          print("wipe everything in existing directory")
+          #If wipe is True, remove files present in the directory
+          if wipe:
+              # os.chdir(self.dir_path)
+              filelist=os.listdir(self.dir_path)
+              print(filelist)
+              for file in filelist:
+                  os.remove(os.path.join(self.dir_path,file))
+      print("successfully made directory")
+      
+  def write_to_file(self, iteration,interval=5):
+      if(iteration%interval==0):
+          filename=f"p-u-v-iteration{iteration}.txt"
+          path=os.path.join(self.dir_path,filename)
+          with open(path,"w") as file:
+              for i in range(self.nx): # I question doing it from 1,-1
+                  for j in range(self.ny):
+                      file.write(f"{self.p[i,j]},{self.u[i,j]},{self.v[i,j]}\n")
+    
+def application():
+    cfd_solver = CavityFlow(tmpdir="./sample_data")
+    cfd_solver.set_u_boundaries()
+    cfd_solver.set_v_boundaries()
+    cfd_solver.set_pressure_boundaries()
+
+    cfd_solver.simulate_cavity_flow(nt=100)
+    
+    import numpy as np
+    from matplotlib import pyplot as plt, cm
+
+    
+    x = np.linspace(cfd_solver.x_min, cfd_solver.x_max, cfd_solver.nx)
+    y = np.linspace(cfd_solver.x_min, cfd_solver.x_max, cfd_solver.nx)
+    
+    X,Y = np.meshgrid(x,y)
+    
+    fig = plt.figure(figsize=(11,7), dpi=100)
+    # plotting the pressure field as a contour
+    plt.contourf(X, Y, cfd_solver.p, alpha=0.5, cmap=cm.viridis)
+    plt.colorbar()
+    # plotting the pressure field outlines
+    plt.contour(X, Y, cfd_solver.p, cmap=cm.viridis)
+    # plotting velocity field
+    plt.quiver(X[::2, ::2], Y[::2, ::2], cfd_solver.u[::2, ::2], cfd_solver.v[::2, ::2])
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    
+    # /tmp/cavity_flow.png
+    plt.savefig('cavity_flow_quiver_plot.png', bbox_inches='tight')
+    print("Wrote cavity_flow_quiver_plot.png successfullly.")
+    
+    fig = plt.figure(figsize=(11, 7), dpi=100)
+    plt.contourf(X, Y, cfd_solver.p, alpha=0.5, cmap=cm.viridis)
+    plt.colorbar()
+    plt.contour(X, Y, cfd_solver.p, cmap=cm.viridis)
+    plt.streamplot(X, Y, cfd_solver.u, cfd_solver.v)
+    plt.xlabel('X')
+    plt.ylabel('Y');
+    plt.savefig('cavity_flow_stream_plot.png', bbox_inches='tight')
+    print("Wrote cavity_flow_stream_plot.png successfullly.")
+
+
+    flow_visualizer = FlowVisualizer(nx=cfd_solver.nx,
+                                      ny=cfd_solver.ny,
+                                      x_max=cfd_solver.x_max,
+                                      y_max=cfd_solver.y_max,
+                                      tmpdir="./sample_data")
+    # flow_visualizer.make_plot(iteration=90)  
+    
+    flow_visualizer.save_animation()
+    
+    
+
+if __name__ == '__main__':
+    application()
